@@ -4,6 +4,8 @@ import 'dotenv/config';
 import cors from 'cors';
 import helmet from 'helmet';
 import { connectMongoDB } from './db/connectMongoDB.js';
+
+import { errors } from 'celebrate';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -23,6 +25,10 @@ app.use(studentsRoutes);
 
 //? 404 — якщо маршрут не знайдено
 app.use(notFoundHandler);
+
+//? Помилка валідації
+
+app.use(errors());
 
 //? Error — якщо під час запиту виникла помилка
 app.use(errorHandler);
