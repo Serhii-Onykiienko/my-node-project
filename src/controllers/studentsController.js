@@ -4,12 +4,45 @@ import createHttpError from 'http-errors';
 //? GET Отримати список усіх студентів
 
 export const getStudents = async (req, res) => {
-  const { page = 1, perPage = 10 } = req.query;
+  const {
+    page = 1,
+    perPage = 10,
+    gender,
+    minAvgMark,
+    age,
+    minAge,
+    maxAge,
+    onDuty,
+  } = req.query;
   console.log(req.query);
 
   const skip = (page - 1) * perPage;
 
   const studentsQuery = Student.find();
+
+  if (gender) {
+    studentsQuery.where('gender').equals(gender);
+  }
+
+  if (minAvgMark) {
+    studentsQuery.where('avgMark').gte(minAvgMark);
+  }
+
+  if (age !== undefined) {
+    studentsQuery.where('age').equals(age);
+  }
+
+  if (minAge !== undefined) {
+    studentsQuery.where('age').gte(minAge);
+  }
+
+  if (maxAge !== undefined) {
+    studentsQuery.where('age').lte(maxAge);
+  }
+
+  if (onDuty !== undefined) {
+    studentsQuery.where('onDuty').equals(onDuty);
+  }
 
   const [totalItems, students] = await Promise.all([
     studentsQuery.clone().countDocuments(),
