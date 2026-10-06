@@ -13,6 +13,9 @@ export const getStudents = async (req, res) => {
     minAge,
     maxAge,
     onDuty,
+    search,
+    sortBy,
+    sortOrder,
   } = req.query;
   console.log(req.query);
 
@@ -44,9 +47,18 @@ export const getStudents = async (req, res) => {
     studentsQuery.where('onDuty').equals(onDuty);
   }
 
+  if (search) {
+    studentsQuery.where({
+      name: { $regex: search, $options: 'i' },
+    });
+  }
+
   const [totalItems, students] = await Promise.all([
     studentsQuery.clone().countDocuments(),
-    studentsQuery.skip(skip).limit(perPage),
+    studentsQuery
+      .skip(skip)
+      .limit(perPage)
+      .sort({ [sortBy]: sortOrder }),
   ]);
 
   const totalPages = Math.ceil(totalItems / perPage);

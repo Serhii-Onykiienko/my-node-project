@@ -74,5 +74,10 @@ export const getStudentsSchema = {
     maxAge: Joi.number().integer().positive(),
 
     onDuty: Joi.boolean(),
+
+    search: Joi.string().trim().allow(''),
+
+    sortBy: Joi.string().valid('_id', 'name', 'age', 'avgMark'),
+    sortOrder: Joi.string().valid('asc', 'desc'),
   }).without('age', ['minAge', 'maxAge']),
 };
